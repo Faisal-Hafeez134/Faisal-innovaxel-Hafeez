@@ -19,6 +19,15 @@ class ShortUrlController extends Controller
             return response($validator->errors(), 422);
         }
 
+        $existing = ShortUrl::where('original_url', $request->url)->first();
+
+        if ($existing) {
+            return response()->json([
+                'message' => 'Short URL already exists',
+                'data' => $existing,
+            ], 409);
+        }
+
         $short = ShortUrl::create([
             'original_url' => $request->url,
             'short_code' => Str::random(6),
