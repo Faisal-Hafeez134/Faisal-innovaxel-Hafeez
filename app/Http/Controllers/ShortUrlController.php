@@ -41,6 +41,36 @@ class ShortUrlController extends Controller
         return response()->json($short, 200);
     }
 
+    public function update(Request $request, $code)
+    {
+        $short = ShortUrl::where('short_code', $code)->first();
+
+        if (!$short)
+            return response()->json(['error' => 'Not found'], 404);
+
+        $validator = Validator::make($request->all(), [
+            'url' => 'required|url',
+        ]);
+
+        if ($validator->fails()) {
+            return response($validator->errors(), 422);
+        }
+
+        $short->update(['original_url' => $request->url]);
+
+        return response()->json($short, 200);
+    }
+
+    public function destroy($code)
+    {
+        $short = ShortUrl::where('short_code', $code)->first();
+
+        if (!$short)
+            return response()->json(['error' => 'Not found'], 404);
+
+        $short->delete();
+        return response()->noContent();
+    }
 
 
 
