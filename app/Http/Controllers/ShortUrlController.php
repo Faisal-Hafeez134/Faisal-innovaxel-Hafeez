@@ -72,6 +72,24 @@ class ShortUrlController extends Controller
         return response()->noContent();
     }
 
+    public function stats($code)
+    {
+        $short = ShortUrl::where('short_code', $code)->first();
+
+        if (!$short)
+            return response()->json(['error' => 'Not found'], 404);
+
+        return response()->json([
+            'id' => $short->id,
+            'url' => $short->original_url,
+            'shortCode' => $short->short_code,
+            'createdAt' => $short->created_at,
+            'updatedAt' => $short->updated_at,
+            'accessCount' => $short->access_count,
+        ], 200);
+    }
+
+
 
 
 }
