@@ -30,6 +30,18 @@ class ShortUrlController extends Controller
         return response()->json($short, 201);
     }
 
+    public function show($code)
+    {
+        $short = ShortUrl::where('short_code', $code)->first();
+
+        if (!$short)
+            return response()->json(['error' => 'Not found'], 404);
+
+        $short->increment('access_count');
+        return response()->json($short, 200);
+    }
+
+
 
 
 }
